@@ -86,6 +86,32 @@ client.on("message", async message =>{
         }
 })
 
+
+client.on('messageUpdate', (oldMsg, newMsg)=>{
+    if (!configuredServers[oldMsg.channel.id]) {
+
+        for ( key in configuredServers) {
+            const value = configuredServers[key]
+
+            if (key != oldMsg.guild.id) {
+
+                const server = client.guilds.cache.get(key)
+                const channel = server.channels.cache.get(value)
+
+                channel.messages.fetch({ limit: 100 }).then(messages => {
+
+                    messages.filter(message=>{
+                        if(message.author.bot && message.content == oldMsg.content) {
+                            message.edit(newMsg.content)
+                            return
+                        }
+                    })
+                }).catch(console.error);
+            }
+        }
+    }
+})
+
 function criarHook(channel) {
     channel.createWebhook('crossover-bot', {
         avatar: 'https://i.pinimg.com/originals/d7/96/3b/d7963b33fec9c7eea90be6cc52bc0c06.png',
