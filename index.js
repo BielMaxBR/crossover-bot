@@ -1,4 +1,4 @@
-const { Client, MessageEmbed } = require("discord.js");
+const { Client, WebhookClient } = require("discord.js");
 const client = new Client(); 
 require('dotenv').config();
 
@@ -101,8 +101,13 @@ client.on('messageUpdate', (oldMsg, newMsg)=>{
                 channel.messages.fetch({ limit: 100 }).then(messages => {
 
                     messages.filter(message=>{
-                        if(message.author.bot && message.content == oldMsg.content) {
-                            message.edit(newMsg.content)
+                        if(message.webhookID && message.content == oldMsg.content) {
+                            pegarHook(channel).then( hook =>{
+                                if (!hook) return;
+                                const hookClient = new WebhookClient(hook.id, hook.token)
+                                console.log(hookClient.client)//.get(server.id).channels.cache.get(channel.id).messages.cache.get(message.id).edit(newMsg.content)
+                                
+                            }).catch(console.error);
                             return
                         }
                     })
