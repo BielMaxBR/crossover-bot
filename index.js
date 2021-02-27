@@ -58,7 +58,13 @@ client.on("message", async message =>{
                     } else {
                         await message.channel.send("este chat já está no crossover '-' ")
                     }
-                break;
+                    break;
+                case "test":
+                    pegarHook(message.channel).then(async hook =>{
+                        if (!hook) return;
+                        console.log(hook.client)
+                    })
+                    break;
 
             }
         }
@@ -104,8 +110,7 @@ client.on('messageUpdate', (oldMsg, newMsg)=>{
                         if(message.webhookID && message.content == oldMsg.content) {
                             pegarHook(channel).then( hook =>{
                                 if (!hook) return;
-                                const hookClient = new WebhookClient(hook.id, hook.token)
-                                console.log(hookClient.client)//.get(server.id).channels.cache.get(channel.id).messages.cache.get(message.id).edit(newMsg.content)
+                                hook.client.guilds.cache.get(server.id).channels.cache.get(channel.id).messages.cache.get(message.id).edit(newMsg.content)
                                 
                             }).catch(console.error);
                             return
